@@ -17,7 +17,7 @@ import * as events from 'events';
 
 var recordingPath = 'mongoose_record_replay/';
 
-var serializePath = 'mongoose_record_replay';
+var serializePath = 'mgrecrep/';
 
 
 function readFileAsJSON(filename: string): any {

@@ -30,20 +30,20 @@ On recording, files are created in
 
 
 
-mongo_record_replay/
-mongo_record_replay/data
+mgrecrep/
+mgrecrep/data
 
 The default folder can be changed via :
 
-a) default mongo_record_replay/
+a) default mgrecrep/
 
 a) Environment variable
-MONGO_RECORD_REPLAY_FOLDER=mongo_record_replay/
+MONGO_RECORD_REPLAY_FOLDER=mgrecrep/
 
 b) explicit path as 2nd argument to
 intrumentMongoose
 
->const recordFolder = './myfolder/';
->var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mongoose'), recordFolder);
->
->
+```javascript
+const recordFolder = './myfolder/';
+var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mongoose'), recordFolder);
+```
