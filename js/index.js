@@ -14,7 +14,7 @@ const process = require("process");
 const mongoose = require("mongoose");
 const events = require("events");
 var recordingPath = 'mongoose_record_replay/';
-var serializePath = 'mongoose_record_replay';
+var serializePath = 'mgrecrep/';
 function readFileAsJSON(filename) {
     var data = fs.readFileSync(filename, 'utf-8');
     try {
@@ -57,12 +57,15 @@ function instrumentModel(model) {
 }
 exports.instrumentModel = instrumentModel;
 var crypto = require('crypto');
+function makeFileName(digest) {
+    return (recordingPath + 'data/' + digest + '.json');
+}
 function recordOp(op, name, query, res) {
     var md5sum = crypto.createHash('md5');
     debuglog('here the name ' + name);
     md5sum.update(op + name + JSON.stringify(query));
     var digest = md5sum.digest('hex');
-    fs.writeFileSync(recordingPath + digest, JSON.stringify(res, undefined, 2));
+    fs.writeFileSync(makeFileName(digest), JSON.stringify(res, undefined, 2));
     var known = {};
     try {
         known = readFileAsJSON(recordingPath + 'queries.json');
@@ -81,7 +84,7 @@ function retrieveOp(op, name, query) {
     var md5sum = crypto.createHash('md5');
     md5sum.update(op + name + JSON.stringify(query));
     var digest = md5sum.digest('hex');
-    var filename = recordingPath + 'data/' + digest;
+    var filename = makeFileName(digest);
     debuglog(' filename ' + filename);
     var res = readFileAsJSON(filename);
     return res;

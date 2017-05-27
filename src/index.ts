@@ -67,13 +67,16 @@ export function instrumentModel(model : mongoose.Model<any>) {
 
 var crypto = require('crypto');
 
+function makeFileName(digest) {
+   return (recordingPath + 'data/' + digest + '.json');
+}
 
 export function recordOp(op : string, name : string, query : any, res : any) {
     var md5sum = crypto.createHash('md5');
     debuglog('here the name ' + name);
     md5sum.update(op + name + JSON.stringify(query));
     var digest = md5sum.digest('hex');
-    fs.writeFileSync(recordingPath + digest, JSON.stringify(res,undefined,2));
+    fs.writeFileSync(makeFileName(digest), JSON.stringify(res,undefined,2));
 
     var known = {};
     try {
@@ -93,7 +96,7 @@ export function retrieveOp(op : string, name : string, query : any) {
     var md5sum = crypto.createHash('md5');
     md5sum.update(op + name + JSON.stringify(query));
     var digest = md5sum.digest('hex');
-    var filename = recordingPath + 'data/' + digest;
+    var filename = makeFileName(digest);
     debuglog(' filename ' + filename);
     var res = readFileAsJSON(filename);
     return res;
