@@ -19,6 +19,8 @@ var recordingPath = 'mongoose_record_replay/';
 
 var serializePath = 'mgrecrep/';
 
+var theMode = undefined;
+
 
 function readFileAsJSON(filename: string): any {
     var data = fs.readFileSync(filename, 'utf-8');
@@ -52,13 +54,9 @@ dbEmitter.setMaxListeners(0);
 import * as fs from 'fs';
 
 export function instrumentModel(model : mongoose.Model<any>) {
-    if(process.env.MONGO_RECORD && process.env.MONGO_REPLAY) {
-        console.log('set only one of MONGO_RECORD MONGO_REPLAY');
-        process.exit(-1);
-    }
-    if (process.env.MONGO_RECORD) {
+    if (theMode === "RECORD") {
         instrumentModelRecord(model);
-    } else if (process.env.MONGO_REPLAY) {
+    } else if (theMode === "REPLAY") {
         // todo
         instrumentModelReplay(model);
     }
@@ -99,6 +97,9 @@ export function retrieveOp(op : string, name : string, query : any) {
     var filename = makeFileName(digest);
     debuglog(' filename ' + filename);
     var res = readFileAsJSON(filename);
+    if(res === undefined) {
+        debuglog('empty result for query ' + op + ' ' + JSON.stringify(query,undefined,2)+ '\n' + filename);
+    }
     return res;
 }
 
@@ -195,12 +196,12 @@ export function instrumentModelReplay(modelDoc : mongoose.Model<any>) {
 }
 
 export function instrumentMongoose(mongoose: mongoose.Mongoose, path? : string, mode? : string) : mongoose.Mongoose {
-     var themode = mode || process.env.MONGO_RECORD_REPLAY;
+     theMode = mode || process.env.MONGO_RECORD_REPLAY;
      if(mode && ["REPLAY","RECORD"].indexOf(mode) < 0) {
         console.log('set only one of MONGO_RECORD MONGO_REPLAY');
-        throw new Error('mongoose_record_replay mode should be one of "REPLAY", "RECORD"  was ' + themode);
+        throw new Error('mongoose_record_replay mode should be one of "REPLAY", "RECORD"  was ' + theMode);
     }
-    if (themode === "RECORD") {
+    if (theMode === "RECORD") {
         recordingPath = path || process.env.MONGO_RECORD_REPLAY_PATH || "mongoose_record_replay";
         assurePath(recordingPath);
         var omodel = mongoose.model;
@@ -211,7 +212,7 @@ export function instrumentMongoose(mongoose: mongoose.Mongoose, path? : string, 
             return omodel.apply(mongoose, arguments);
         }
         return mongoose;
-    } else if (themode === "REPLAY") {
+    } else if (theMode === "REPLAY") {
         recordingPath = path || process.env.MONGO_RECORD_REPLAY_PATH || "mongoose_record_replay";
         return mongooseMock as any;
     }
@@ -230,7 +231,7 @@ export var mongooseMock = {
         if(b === undefined) {
             return this.models[a];
         }
-        debuglog('createing model '+ a);
+        debuglog('creating model  '+ a + ' at mock');
         this.models[a] = instrumentModel({
             find : function() {},
             aggregate : function() {},

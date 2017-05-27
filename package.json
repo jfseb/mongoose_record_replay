@@ -1,7 +1,7 @@
 {
   "name": "mongoose_record_replay",
-  "version": "0.0.2",
-  "description": "model reading",
+  "version": "0.0.3",
+  "description": "readonly mongoose drop in for testing ( and recording test data )",
   "main": "js/index.js",
   "typings": "js/index",
   "scripts": {
