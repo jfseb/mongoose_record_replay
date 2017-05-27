@@ -1,0 +1,50 @@
+{
+  "name": "mongoose_record_replay",
+  "version": "0.0.1",
+  "description": "model reading",
+  "main": "js/index.js",
+  "typings": "js/index",
+  "scripts": {
+    "build": "gulp",
+    "test": "gulp test",
+    "instrument": "jscoverage js/ gen_cov/ --exclude *.map,*.d.ts",
+    "testcov2": "export FSD_COVERAGE=1 && nodeunit test --reporter=lcov",
+    "testcov": "export FSD_COVERAGE=1 && nodeunit test --reporter=lcov | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jfseb/mongoose_record_replay.git"
+  },
+  "keywords": [
+    "typescript",
+    "mgnlq"
+  ],
+  "author": "jfsebpublic@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jfseb/mgongoose_record_replay/issues"
+  },
+  "homepage": "https://github.com/jfseb/mongoose_record_replay#readme",
+  "devDependencies": {
+    "@types/debug": "0.0.29",
+    "@types/lodash": "^4.14.61",
+    "@types/mongoose": "^4.7.13",
+    "@types/node": "^7.0.5",
+    "babel-preset-es2015": "^6.22.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-env": "^0.4.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-nodeunit": "^0.1.0",
+    "gulp-run": "^1.7.1",
+    "gulp-typescript": "^3.1.5",
+    "jscoverage": "^0.6.0",
+    "typescript": "^2.2.1"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.18",
+    "debugf": "^0.1.2",
+    "mongoose": "^4.9.9"
+  }
+}
