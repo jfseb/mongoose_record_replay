@@ -1,6 +1,6 @@
 {
   "name": "mongoose_record_replay",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "model reading",
   "main": "js/index.js",
   "typings": "js/index",
