@@ -7,7 +7,7 @@ var root = (process.env.FSD_COVERAGE) ? '../gen_cov' : '../js';
 
 //var debuglog = require('debugf')('test.mongoose_record_replay.nunit.js');
 
-var MongoMock = require(root + '/index.js');
+var MongoMock = require(root + '/mgrecrep.js');
 
 /**
  * clear a cache for the defaut mode for coverage

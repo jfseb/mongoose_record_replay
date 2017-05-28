@@ -7,9 +7,9 @@
   "scripts": {
     "build": "gulp",
     "test": "gulp test",
-    "instrument": "jscoverage js/ gen_cov/ --exclude *.map,*.d.ts",
-    "testcov2": "export FSD_COVERAGE=1 && nodeunit test --reporter=lcov",
-    "testcov": "export FSD_COVERAGE=1 && nodeunit test --reporter=lcov | coveralls"
+    "coverage": "./node_modules/.bin/nyc --source-map false nodeunit test",
+    "coverreportplain": "./node_modules/.bin/nyc --source-map false report --reporter=text-lcov ",
+    "coveralls": "./node_modules/.bin/nyc --source-map false report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -40,10 +40,10 @@
     "gulp-run": "^1.7.1",
     "gulp-typescript": "^3.1.5",
     "jscoverage": "^0.6.0",
+    "nyc": "^10.3.2",
     "typescript": "^2.2.1"
   },
   "dependencies": {
-    "@types/node": "^7.0.18",
     "debugf": "^0.1.2",
     "mongoose": "^4.9.9"
   }

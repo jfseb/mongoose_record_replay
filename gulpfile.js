@@ -52,7 +52,7 @@ gulp.task('tsc', function () {
     // .pipe( ... ) // You can use other plugins that also support gulp-sourcemaps
     .pipe(sourcemaps.write('.', {
       sourceRoot: function (file) {
-        file.sourceMap.sources[0] = '/projects/nodejs/botbuilder/fdevstar_monmove/src/' + file.sourceMap.sources[0];
+        file.sourceMap.sources[0] = '/projects/nodejs/botbuilder/mongoose_record_replay/src/' + file.sourceMap.sources[0];
         // console.log('here is************* file' + JSON.stringify(file, undefined, 2))
         return 'ABC';
       },

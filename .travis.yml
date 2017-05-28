@@ -8,7 +8,5 @@ node_js:
  - "node"
 # - "4"   does not support sourcemaps
 after_script:
-  - npm run instrument
-  - npm run testcov2
-  - npm run testcov
-
+  - npm run coverage
+  - npm run coveralls
