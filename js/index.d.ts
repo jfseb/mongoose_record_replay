@@ -1,2 +1,2 @@
 import * as mongoose_record_replay from "./mgrecrep";
-export default mongoose_record_replay;
+export declare var instrumentMongoose: typeof mongoose_record_replay.instrumentMongoose;
