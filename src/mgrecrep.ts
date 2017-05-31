@@ -1,11 +1,11 @@
 /**
- * instrument mongoose to replay queries ( !! only queries so far)
+ * instrument mongoose to record/replay queries ( !! only queries so far)
  *
+ * allows to run (mongoose read only) unit tests w.o. a mongoose instance
  *
  * @file
  */
 
-//import * as intf from 'constants';
 import * as debugf from 'debugf';
 
 var debuglog = debugf('mongoose_record_replay');
@@ -14,9 +14,15 @@ var debuglog = debugf('mongoose_record_replay');
 import * as process from 'process';
 import * as mongoose from 'mongoose';
 import * as events from 'events';
+import * as fs from 'fs';
+const crypto = require('crypto');
 
+
+/**
+ * The recording path, set via argument
+ * or
+ */
 var recordingPath = 'mongoose_record_replay/';
-
 var serializePath = 'mgrecrep/';
 
 var theMode = undefined;
@@ -49,9 +55,9 @@ function assurePath(path : string) {
 }
 
 var dbEmitter = new events.EventEmitter();
+// unit test invoke this multiple times, avoid node js warning
 dbEmitter.setMaxListeners(0);
 
-import * as fs from 'fs';
 
 export function instrumentModel(model : mongoose.Model<any>) {
     if (theMode === "RECORD") {
@@ -63,7 +69,6 @@ export function instrumentModel(model : mongoose.Model<any>) {
     return model;
 }
 
-var crypto = require('crypto');
 
 function makeFileName(digest) {
    return (recordingPath + 'data/' + digest + '.json');
@@ -104,7 +109,7 @@ export function retrieveOp(op : string, name : string, query : any) {
 }
 
 export function instrumentModelRecord(modelDoc : mongoose.Model<any>) {
-    console.log('instrumenting model ' + modelDoc.modelName);
+    console.log('mongoose_record_replay is instrumenting model ' + modelDoc.modelName + ' for recording ');
     var oFind = modelDoc.find;
     modelDoc.find = function() : any {
         debuglog('someone is calling find with ' + modelDoc.modelName   + JSON.stringify(arguments,undefined,2));
@@ -195,6 +200,15 @@ export function instrumentModelReplay(modelDoc : mongoose.Model<any>) {
     }
 }
 
+/**
+ * funtion to instrument mongoose
+ *
+ *
+ *
+ * @param mongoose a real mongoose instance
+ * @param [path] {string} optional, a path to write/read files from, defaults to "mgrecrep/"
+ * @param mode {string}  undefined (environment value) or "REPLAY" or "RECORD"
+ */
 export function instrumentMongoose(mongoose: mongoose.Mongoose, path? : string, mode? : string) : mongoose.Mongoose {
      theMode = mode || process.env.MONGO_RECORD_REPLAY;
      if(mode && ["REPLAY","RECORD"].indexOf(mode) < 0) {

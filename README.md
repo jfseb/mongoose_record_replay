@@ -12,6 +12,22 @@ Allows to record query results,
 var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mongoose'));
 ```
 
+##extended usage:
+Behaviour can be set by environment variables ( see below) or explicitly via paramter:
+
+```javascript
+var mode = 'REPLAY';
+if (process.env.MYSWITCH) {
+  mode = 'RECORD';
+}
+var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mongoose'),
+  'node_modules/mgnlq_testmodel_replay/mgrecrep/',
+  mode);
+```
+var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mongoose'));
+```
+
+
 
 currently supported methods:
 
@@ -20,30 +36,81 @@ currently supported methods:
 3. <Model>.distinct( ).then( ... )
 
 
-Environment variable
-MONGO_RECORD_REPLAY controls the mode:
+# Modes
 
-MONGO_RECORD_REPLAY   (not set) original mongoose
-MONGO_RECORD_REPLAY=RECORD
-MONGO_RECORD_REPLAY=REPLAY
-On recording, files are created in
+The operational mode is controlled by the environment variable
+``MONGO_RECORD_REPLAY``
+
+## Original mongoose
+
+## Replaying  (``set MONGO_RECORD_REPLAY=REPLAY``)
+
+ Connection establishing is suppressed!
+
+ operation <Model>.find, <Model>.aggregate, <Model>.distinct
+ return there recorded result ( if found ) or an
+ ENOENT message on the file
+
+ (set debug=mongoose_rec* ) to get more infomration
+
+
+## Recording  (``set MONGO_RECORD_REPLAY=RECORD``)
+
+Queries are executed against mongoose,
+1.  query input
+    * ``<modelname>``,
+    * `<operation> (e.g. `find, aggregate, distinct`),
+    * `<query/pipeline>` argumetns are recorded )
+and
+2. Result is recorded and stored.
 
 
 
-mgrecrep/
-mgrecrep/data
+## Recording location
 
-The default folder can be changed via :
 
-a) default mgrecrep/
 
-a) Environment variable
-MONGO_RECORD_REPLAY_FOLDER=mgrecrep/
+On recording, files are created in (default locattion "mgrecrep/", can be controlled )
 
-b) explicit path as 2nd argument to
-intrumentMongoose
+    1. mgrecrep/queries.json
+        List of queries recorded
+        could be used to refire them and update with new data.
+        (=> nice feature)
 
-```javascript
-const recordFolder = './myfolder/';
-var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mongoose'), recordFolder);
-```
+    2. mgrecrep/data/<uniqueid>
+
+
+
+The default folder can be changed via environment variables
+``MONGO_RECORD_REPLAY_PATH``:
+
+The variable value shall end with a terminating '/' !
+
+
+    1. default mgrecrep
+    2. Environment variable ``MONGO_RECORD_REPLAY_FOLDER``, e.g.
+       ```
+       process.env.MONGO_RECORD_REPLAY_FOLDER= mgrecrep/
+       set MONGO_RECORD_REPLOAY_FOLDER=mypath/myfolder/
+       export MONGO_RECORD_REPLAY_FOLRDER  mypath/myfolder/
+       ```
+
+
+    3. explicit path as 2nd argument to ``intrumentMongoose``
+
+        ```javascript
+        const recordFolder = './myfolder/';
+        var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mongoose'), recordFolder);
+        ```
+
+
+
+# Caveats / Known issues
+
+ 1. Beware: JSON serialization destroys differences between null and undefined etc.
+ 2. Currently returning full model documents is not supported,
+    only the lean().exec promise chain
+
+# Extends
+
+feel free to record issue and provide pull request
