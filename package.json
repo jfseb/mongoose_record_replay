@@ -39,7 +39,6 @@
     "gulp-nodeunit": "^0.1.0",
     "gulp-run": "^1.7.1",
     "gulp-typescript": "^3.1.5",
-    "jscoverage": "^0.6.0",
     "nyc": "^10.3.2",
     "typescript": "^2.2.1"
   },

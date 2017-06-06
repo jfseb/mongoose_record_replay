@@ -26,6 +26,14 @@ try {
 }
 */
 
+
+exports.testDeser = function(test) {
+  var ser = MongoMock.JSONStringify({ a : /abc/g, c : 1 });
+  var r = MongoMock.JSONParse(ser);
+  test.equal(typeof r.a, 'RegExp');
+  test.equal(r.a.toString(), '/abc/g');
+};
+
 exports.testPlainMongo = function(test) {
   var mymock = {};
   var res = MongoMock.instrumentMongoose(mymock,'path1',undefined);
