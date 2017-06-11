@@ -1,6 +1,6 @@
 {
   "name": "mongoose_record_replay",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "readonly mongoose drop in for testing (replaying w.o. mongo db)  and recording (running against mongodb)",
   "main": "js/index.js",
   "typings": "js/index",
@@ -27,7 +27,6 @@
   "homepage": "https://github.com/jfseb/mongoose_record_replay#readme",
   "devDependencies": {
     "@types/debug": "0.0.29",
-    "@types/lodash": "^4.14.61",
     "@types/mongoose": "^4.7.13",
     "@types/node": "^7.0.5",
     "del": "^2.2.2",

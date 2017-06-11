@@ -95,7 +95,15 @@ function digestArgs(op, name, query) {
 exports.digestArgs = digestArgs;
 function recordOp(op, name, query, res) {
     var digest = digestArgs(op, name, query);
-    fs.writeFileSync(makeFileName(digest), JSON.stringify(res, undefined, 2));
+    var resStr = JSON.stringify(res, undefined, 2);
+    var len = 0;
+    if (res && Array.isArray(res)) {
+        len = res.length;
+    }
+    else {
+        len = resStr.length;
+    }
+    fs.writeFileSync(makeFileName(digest), resStr);
     var known = {};
     try {
         known = readFileAsJSON(recordingPath + 'queries.json');
@@ -107,7 +115,7 @@ function recordOp(op, name, query, res) {
         name: name,
         digest: digest,
         query: query,
-        res: res
+        res: len
     };
     fs.writeFileSync(recordingPath + 'queries.json', JSONStringify(known));
 }
