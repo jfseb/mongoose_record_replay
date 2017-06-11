@@ -15,7 +15,7 @@ var testDir = 'test';
 
 gulp.task('watch', function () {
   gulp.watch([srcDir + '/**/*.js', testDir + '/**/*.js', srcDir + '/**/*.tsx', srcDir + '/**/*.ts', 'gulpfile.js'],
-    ['tsc', 'babel', 'eslint']);
+    ['tsc', 'eslint']);
 });
 
 /**

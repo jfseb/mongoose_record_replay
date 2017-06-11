@@ -42,8 +42,9 @@ export function JSONParse(text: string): any {
 
 export function JSONStringify(obj: any): string {
     function customSer(key, value) {
-        if (value instanceof RegExp)
+        if (value instanceof RegExp){
             return ("__REGEXP " + value.toString());
+        }
         else
             return value;
     }
@@ -124,7 +125,14 @@ export function retrieveOp(op: string, name: string, query: any) {
     var digest = md5sum.digest('hex');
     var filename = makeFileName(digest);
     debuglog(' filename ' + filename);
-    var res = readFileAsJSON(filename);
+    try {
+        var res = readFileAsJSON(filename);
+    } catch(e) {
+        console.log(e);
+        console.log(e.stack);
+        console.log(`did not find query result recording (${filename}) \n for collection ${name} operation ${op} \n query arguments: ` + JSONStringify(query));
+        throw e;
+    }
     if (res === undefined) {
         debuglog('empty result for query ' + op + ' ' + JSON.stringify(query, undefined, 2) + '\n' + filename);
     }
