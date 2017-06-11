@@ -26,6 +26,12 @@ try {
 }
 */
 
+exports.testDigestPlatformNeutral = function(test) {
+
+  var res = MongoMock.digestArgs('abc','def', { a : /^abc/i, b : [1,2,'3'] } );
+  test.equal(res, '896d5e71371a58f430b6bbe7fb9079b7');
+  test.done();
+};
 
 exports.testDeser = function (test) {
   var ser = MongoMock.JSONStringify({ a: /abc/g, c: 1 });

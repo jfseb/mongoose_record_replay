@@ -80,7 +80,6 @@ var dbEmitter = new events.EventEmitter();
 // unit test invoke this multiple times, avoid node js warning
 dbEmitter.setMaxListeners(0);
 
-
 export function instrumentModel(model: mongoose.Model<any>) {
     if (theMode === "RECORD") {
         instrumentModelRecord(model);
@@ -96,11 +95,16 @@ function makeFileName(digest) {
     return (recordingPath + 'data/' + digest + '.json');
 }
 
-export function recordOp(op: string, name: string, query: any, res: any) {
+export function digestArgs(op: string, name : string, query : any) {
     var md5sum = crypto.createHash('md5');
     debuglog('here the name ' + name);
     md5sum.update(op + name + JSONStringify(query));
-    var digest = md5sum.digest('hex');
+    var digest = '' + md5sum.digest('hex');
+    return digest;
+}
+
+export function recordOp(op: string, name: string, query: any, res: any) {
+    var digest = digestArgs(op,name,query);
     fs.writeFileSync(makeFileName(digest), JSON.stringify(res, undefined, 2));
 
     var known = {};
@@ -120,9 +124,7 @@ export function recordOp(op: string, name: string, query: any, res: any) {
 }
 
 export function retrieveOp(op: string, name: string, query: any) {
-    var md5sum = crypto.createHash('md5');
-    md5sum.update(op + name + JSONStringify(query));
-    var digest = md5sum.digest('hex');
+    var digest = digestArgs(op,name, query);
     var filename = makeFileName(digest);
     debuglog(' filename ' + filename);
     try {
