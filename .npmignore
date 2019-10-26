@@ -12,7 +12,7 @@ docs
 .gitignore
 .travis.yml
 gulpfile.js
-
+*.cmd
 src
 test
 **/*.map
