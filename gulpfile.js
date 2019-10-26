@@ -1,4 +1,4 @@
-
+/* standard_v1.0.0*/
 
 var gulp = require('gulp');
 
@@ -9,9 +9,10 @@ var sourcemaps = require('gulp-sourcemaps');
  * Directory containing generated sources which still contain
  * JSDOC etc.
  */
-// var genDir = 'gen'
 var srcDir = 'src';
 var testDir = 'test';
+
+var sourcemaproot = '/projects/nodejs/botbuilder/mongoose_record_replay/';
 
 gulp.task('watch', function () {
   gulp.watch([srcDir + '/**/*.js', testDir + '/**/*.js', srcDir + '/**/*.tsx', srcDir + '/**/*.ts', 'gulpfile.js'],
@@ -21,7 +22,7 @@ gulp.task('watch', function () {
 /**
  * compile tsc (including srcmaps)
  * @input srcDir
- * @output genDir
+ * @output js
  */
 gulp.task('tsc', function () {
   var tsProject = ts.createProject('tsconfig.json', { inlineSourceMap: true
@@ -33,13 +34,13 @@ gulp.task('tsc', function () {
   return tsResult.js
     .pipe(sourcemaps.write('.', {
       sourceRoot: function (file) {
-        file.sourceMap.sources[0] = '/projects/nodejs/botbuilder/mongoose_record_replay/src/' + file.sourceMap.sources[0];
+        file.sourceMap.sources[0] = sourcemaproot + 'src/' + file.sourceMap.sources[0];
         // console.log('here is************* file' + JSON.stringify(file, undefined, 2))
         return 'ABC';
       },
       mapSources: function (src) {
-        console.log('here we remap' + src);
-        return '/projects/nodejs/botbuilder/mgnlq_model/' + src;
+        //console.log('here we remap' + src);
+        return sourcemaproot + src;
       }}
     )) // ,  { sourceRoot: './' } ))
     // Now the sourcemaps are added to the .js file
@@ -47,17 +48,11 @@ gulp.task('tsc', function () {
 });
 
 
-var jsdoc = require('gulp-jsdoc3');
-
-gulp.task('doc', ['test'], function (cb) {
-  gulp.src([srcDir + '/**/*.js', 'README.md', './js/**/*.js'], { read: false })
-    .pipe(jsdoc(cb));
-});
 
 var nodeunit = require('gulp-nodeunit');
 
-gulp.task('test', ['tsc'], function () {
-  gulp.src(['test/**/*.js'])
+gulp.task('test', gulp.series('tsc', function () {
+  return gulp.src(['test/**/*.js'])
     .pipe(nodeunit({
       reporter: 'minimal'
     // reporterOptions: {
@@ -65,10 +60,10 @@ gulp.task('test', ['tsc'], function () {
     // }
     })).on('error', function (err) { console.log('This is weird: ' + err.message); })
     .pipe(gulp.dest('./out/lcov.info'));
-});
+}));
 
-gulp.task('testhome', ['test'], function () {
-  gulp.src(['testdb/**/*.js'])
+gulp.task('testhome', gulp.series('test', function () {
+  return gulp.src(['testdb/**/*.js'])
     .pipe(nodeunit({
       reporter: 'minimal'
     // reporterOptions: {
@@ -76,14 +71,22 @@ gulp.task('testhome', ['test'], function () {
     // }
     })).on('error', function (err) { console.log('This is weird: ' + err.message); })
     .pipe(gulp.dest('./out/lcov.info'));
-});
+}));
+
+
+var jsdoc = require('gulp-jsdoc3');
+
+gulp.task('doc', gulp.series( 'test', function (cb) {
+  return gulp.src([srcDir + '/**/*.js', 'README.md', './js/**/*.js'], { read: false })
+    .pipe(jsdoc(cb));
+}));
 
 const eslint = require('gulp-eslint');
 
 gulp.task('eslint', () => {
   // ESLint ignores files with "node_modules" paths.
   // So, it's best to have gulp ignore the directory as well.
-  // Also, Be sure to return the stream from the task
+  // Also, Be sure to return the stream from the task;
   // Otherwise, the task may end before the stream has finished.
   return gulp.src(['src/**/*.js', 'test/**/*.js', 'gulpfile.js'])
     // eslint() attaches the lint output to the "eslint" property
@@ -99,5 +102,5 @@ gulp.task('eslint', () => {
 
 
 // Default Task
-gulp.task('default', ['tsc', 'eslint', 'test', 'doc' ]);
-gulp.task('build', ['tsc', 'eslint']);
+gulp.task('default', gulp.series('tsc', 'eslint', 'test', 'doc'));
+gulp.task('build', gulp.series('tsc', 'eslint'));

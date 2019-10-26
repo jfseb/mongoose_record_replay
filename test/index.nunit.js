@@ -86,7 +86,7 @@ exports.testOpenConnectionAndFindNotPresent = function (test) {
   mongooseM.connection.once('open', function () {
     var model = mongooseM.model('abc', { a: 'schema' });
     try {
-      model.find({ "a": 1 }).lean().exec().then((res) => {
+      model.find({ 'a': 1 }).lean().exec().then((res) => {
         test.equal(1, 0);
         mongooseM.disconnect();
         test.done();
