@@ -103,7 +103,7 @@ function recordOp(op, name, query, res) {
         len = resStr.length;
     }
     var filename = makeFileName(digest);
-    console.log('recording to file ' + filename);
+    console.log('recording to file. ' + filename + ' ...');
     fs.writeFileSync(filename, resStr);
     var known = {};
     try {
@@ -147,7 +147,7 @@ function instrumentModelRecord(modelDoc) {
         debuglog('someone is calling find with ' + modelDoc.modelName + JSON.stringify(arguments, undefined, 2));
         var res = oFind.apply(modelDoc, arguments);
         if (arguments.length !== 1) {
-            throw Error('expected one arguments in find, was ' + arguments.length);
+            throw Error('expected one argument in find, was ' + arguments.length);
         }
         var query = arguments[0];
         res.lean().exec().then((a) => {
@@ -161,14 +161,22 @@ function instrumentModelRecord(modelDoc) {
         debuglog('someone is calling distinct with' + JSON.stringify(arguments, undefined, 2));
         var res = oDistinct.apply(modelDoc, arguments);
         if (arguments.length !== 1) {
-            throw Error('expected on arguments');
+            throw Error('expected one argument ' + JSON.stringify(arguments));
         }
         var query = arguments[0];
-        res.then((a) => {
-            // console.log("here result1 + " + JSON.stringify(a, undefined,2) );
-            recordOp("distinct", modelDoc.modelName, query, a);
+        var res2 = res.then((a) => {
+            debuglog(() => "here result1 + " + JSON.stringify(a, undefined, 2));
+            try {
+                recordOp("distinct", modelDoc.modelName, query, a);
+            }
+            catch (ex) {
+                console.log(' recording to file failed ' + ex);
+                debuglog(() => " recording to file failed " + ex);
+                throw ex;
+            }
+            return a;
         });
-        return res;
+        return res; //res2.then((b) => { console.log(' 2nd promise then ' + b && b.length); return b; });
     };
     var oAggregate = modelDoc.aggregate;
     modelDoc.aggregate = function () {

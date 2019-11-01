@@ -4,9 +4,9 @@ logs
 *.bak
 *.lcov
 
-
+doc
 docs
-
+.vscode/**
 .eslintrc.json
 .npmignore
 .gitignore

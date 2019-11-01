@@ -22,7 +22,6 @@
         "preserveConstEnums": true,
          //"jsx": "react",
         "suppressImplicitAnyIndexErrors": true
- //       "types" : ["node", "core-js"]
     },
     "filesGlob": [
         "**/*.ts",

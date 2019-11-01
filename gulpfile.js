@@ -15,8 +15,8 @@ var testDir = 'test';
 var sourcemaproot = '/projects/nodejs/botbuilder/mongoose_record_replay/';
 
 gulp.task('watch', function () {
-  gulp.watch([srcDir + '/**/*.js', testDir + '/**/*.js', srcDir + '/**/*.tsx', srcDir + '/**/*.ts', 'gulpfile.js'],
-    ['tsc', 'eslint']);
+  return gulp.watch([srcDir + '/**/*.js', testDir + '/**/*.js', srcDir + '/**/*.tsx', srcDir + '/**/*.ts', 'gulpfile.js'],
+    gulp.series(['tsc', 'eslint']));
 });
 
 /**
@@ -25,8 +25,7 @@ gulp.task('watch', function () {
  * @output js
  */
 gulp.task('tsc', function () {
-  var tsProject = ts.createProject('tsconfig.json', { inlineSourceMap: true
-  });
+  var tsProject = ts.createProject('tsconfig.json', { inlineSourceMap: true });
   var tsResult = tsProject.src() // gulp.src('lib/*.ts')
     .pipe(sourcemaps.init()) // This means sourcemaps will be generated
     .pipe(tsProject());
@@ -40,7 +39,7 @@ gulp.task('tsc', function () {
       },
       mapSources: function (src) {
         //console.log('here we remap' + src);
-        return sourcemaproot + src;
+        return /* sourcemaproot +*/ src;
       }}
     )) // ,  { sourceRoot: './' } ))
     // Now the sourcemaps are added to the .js file
@@ -48,6 +47,18 @@ gulp.task('tsc', function () {
 });
 
 
+
+var del = require('del');
+
+gulp.task('clean_recorded_data', function () {
+  return del([
+    'mgrecrep/*',
+    // here we use a globbing pattern to match everything inside the `mobile` folder
+    //  'dist/mobile/**/*',
+    // we don't want to clean this file though so we negate the pattern
+    //    '!dist/mobile/deploy.json'
+  ]);
+});
 
 var nodeunit = require('gulp-nodeunit');
 
