@@ -11,6 +11,7 @@ import * as debugf from 'debugf';
 var debuglog = debugf('mongoose_record_replay');
 //const loadlog = logger.logger('modelload', '');
 
+const path = require('path');
 import * as process from 'process';
 import * as mongoose from 'mongoose';
 import * as events from 'events';
@@ -112,7 +113,7 @@ export function recordOp(op: string, name: string, query: any, res: any) {
         len = resStr.length;
     }
     var filename = makeFileName(digest);
-    console.log( 'recording to file. ' + filename + ' ...');
+    console.log( 'recording to file: ' + filename + ' (' + path.normalize(filename) + ')...');
     fs.writeFileSync(filename, resStr);
     var known = {};
     try {
