@@ -10,6 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const debugf = require("debugf");
 var debuglog = debugf('mongoose_record_replay');
 //const loadlog = logger.logger('modelload', '');
+const path = require('path');
 const process = require("process");
 const mongoose = require("mongoose");
 const events = require("events");
@@ -103,7 +104,7 @@ function recordOp(op, name, query, res) {
         len = resStr.length;
     }
     var filename = makeFileName(digest);
-    console.log('recording to file. ' + filename + ' ...');
+    console.log('recording to file: ' + filename + ' (' + path.normalize(filename) + ')...');
     fs.writeFileSync(filename, resStr);
     var known = {};
     try {

@@ -1,12 +1,10 @@
 language: node_js
+env:
+  - debug=
 before_script:
   - unset FSD_COVERAGE
   - gulp
-#  - gulp instrument
 node_js:
- - "8"
- - "node"
-# - "4"   does not support sourcemaps
+ - 12
 after_script:
-  - npm run coverage
   - npm run coveralls

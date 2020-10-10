@@ -1,4 +1,4 @@
-/* standard_v1.0.0*/
+/* standard_v1.0.1*/
 
 var gulp = require('gulp');
 
@@ -12,41 +12,25 @@ var sourcemaps = require('gulp-sourcemaps');
 var srcDir = 'src';
 var testDir = 'test';
 
-var sourcemaproot = '/projects/nodejs/botbuilder/mongoose_record_replay/';
-
 gulp.task('watch', function () {
-  return gulp.watch([srcDir + '/**/*.js', testDir + '/**/*.js', srcDir + '/**/*.tsx', srcDir + '/**/*.ts', 'gulpfile.js'],
-    gulp.series(['tsc', 'eslint']));
+  return gulp.watch([srcDir + '/**/*.js', testDir + '/**/*.js', srcDir + '/**/*.tsx',  srcDir + '/**/*.ts', 'gulpfile.js'],
+    gulp.series('tsc', 'eslint', 'test'));
 });
 
-/**
- * compile tsc (including srcmaps)
- * @input srcDir
- * @output js
- */
-gulp.task('tsc', function () {
-  var tsProject = ts.createProject('tsconfig.json', { inlineSourceMap: true });
-  var tsResult = tsProject.src() // gulp.src('lib/*.ts')
-    .pipe(sourcemaps.init()) // This means sourcemaps will be generated
-    .pipe(tsProject());
+/* ################ proprietary extensions 1 ################# */
 
-  return tsResult.js
-    .pipe(sourcemaps.write('.', {
-      sourceRoot: function (file) {
-        file.sourceMap.sources[0] = sourcemaproot + 'src/' + file.sourceMap.sources[0];
-        // console.log('here is************* file' + JSON.stringify(file, undefined, 2))
-        return 'ABC';
-      },
-      mapSources: function (src) {
-        //console.log('here we remap' + src);
-        return /* sourcemaproot +*/ src;
-      }}
-    )) // ,  { sourceRoot: './' } ))
-    // Now the sourcemaps are added to the .js file
+/* ^^^^^^ proprietary extensions 1 */
+
+
+// compile with inlineSourceMaps  ( this should be same as plain tsc execution on commandline)
+gulp.task('tsc', function () {
+  var tsProject = ts.createProject('tsconfig.json', { declaration: true, sourceMap : false, inlineSourceMap: true });
+  return tsProject.src() // gulp.src('lib/*.ts')
+    .pipe(sourcemaps.init()) // This means sourcemaps will be generated
+    .pipe(tsProject())
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('js'));
 });
-
-
 
 var del = require('del');
 
@@ -60,37 +44,18 @@ gulp.task('clean_recorded_data', function () {
   ]);
 });
 
-var nodeunit = require('gulp-nodeunit');
 
-gulp.task('test', gulp.series('tsc', function () {
-  return gulp.src(['test/**/*.js'])
-    .pipe(nodeunit({
-      reporter: 'minimal'
-    // reporterOptions: {
-    //  output: 'testcov'
-    // }
-    })).on('error', function (err) { console.log('This is weird: ' + err.message); })
-    .pipe(gulp.dest('./out/lcov.info'));
-}));
+var jest = require('gulp-jest').default;
 
-gulp.task('testhome', gulp.series('test', function () {
-  return gulp.src(['testdb/**/*.js'])
-    .pipe(nodeunit({
-      reporter: 'minimal'
-    // reporterOptions: {
-    //  output: 'testcov'
-    // }
-    })).on('error', function (err) { console.log('This is weird: ' + err.message); })
-    .pipe(gulp.dest('./out/lcov.info'));
-}));
-
-
-var jsdoc = require('gulp-jsdoc3');
-
-gulp.task('doc', gulp.series( 'test', function (cb) {
-  return gulp.src([srcDir + '/**/*.js', 'README.md', './js/**/*.js'], { read: false })
-    .pipe(jsdoc(cb));
-}));
+gulp.task('jestonly', function () {
+  process.env.NODE_ENV = 'test';
+  return gulp.src('test').pipe(jest({
+    'preprocessorIgnorePatterns': [
+      './dist/', './node_modules/'
+    ],
+    'automock': false
+  }));
+});
 
 const eslint = require('gulp-eslint');
 
@@ -100,17 +65,33 @@ gulp.task('eslint', () => {
   // Also, Be sure to return the stream from the task;
   // Otherwise, the task may end before the stream has finished.
   return gulp.src(['src/**/*.js', 'test/**/*.js', 'gulpfile.js'])
-    // eslint() attaches the lint output to the "eslint" property
-    // of the file object so it can be used by other modules.
+  // eslint() attaches the lint output to the "eslint" property
+  // of the file object so it can be used by other modules.
     .pipe(eslint())
-    // eslint.format() outputs the lint results to the console.
-    // Alternatively use eslint.formatEach() (see Docs).
+  // eslint.format() outputs the lint results to the console.
+  // Alternatively use eslint.formatEach() (see Docs).
     .pipe(eslint.format())
-    // To have the process exit with an error code (1) on
-    // lint error, return the stream and pipe to failAfterError last.
+  // To have the process exit with an error code (1) on
+  // lint error, return the stream and pipe to failAfterError last.
     .pipe(eslint.failAfterError());
 });
 
+gulp.task('test', gulp.series('tsc', 'jestonly')); 
+
+/*
+const gulpRun = require('gulp-run');
+
+gulp.task('pack', () => {
+  return gulpRun('npm pack').exec().pipe(gulp.dest('outpu'));
+});
+*/
+
+var jsdoc = require('gulp-jsdoc3');
+
+gulp.task('doc', gulp.series('test', function (cb) {
+  return gulp.src([srcDir + '/**/*.js', 'README.md', './js/**/*.js'], { read: false })
+    .pipe(jsdoc(cb));
+}));
 
 // Default Task
 gulp.task('default', gulp.series('tsc', 'eslint', 'test', 'doc'));

@@ -26,76 +26,75 @@ try {
 }
 */
 
-exports.testDigestPlatformNeutral = function(test) {
+it("testDigestPlatformNeutral", done => {
 
   var res = MongoMock.digestArgs('abc','def', { a : /^abc/i, b : [1,2,'3'] } );
-  test.equal(res, '896d5e71371a58f430b6bbe7fb9079b7');
-  test.done();
-};
+  expect(res).toEqual('896d5e71371a58f430b6bbe7fb9079b7');
+  done();
+});
 
-exports.testDeser = function (test) {
+it("testDeser", done => {
   var ser = MongoMock.JSONStringify({ a: /abc/g, c: 1 });
   var r = MongoMock.JSONParse(ser);
-  test.equal(r.a instanceof RegExp,true, 'object');
-  //test.equal(typeof r.a, 'RegExp', 'object');
-  test.equal(r.a.toString(), '/abc/g');
-  test.done();
-};
+  expect(r.a instanceof RegExp).toEqual(true);
+  expect(r.a.toString()).toEqual('/abc/g');
+  done();
+});
 
-exports.testPlainMongo = function (test) {
+it("testPlainMongo", done => {
   var mymock = {};
   var res = MongoMock.instrumentMongoose(mymock, 'path1', undefined);
-  test.equal(res, mymock);
-  test.done();
-};
+  expect(res).toEqual(mymock);
+  done();
+});
 
-exports.testOpenConnection = function (test) {
+it("testOpenConnection", done => {
   var mymock = {};
-  test.expect(1);
+  expect.assertions(1);
   var res = MongoMock.instrumentMongoose(mymock, 'path1/', 'REPLAY');
   res.connect('dummyconn');
   res.connection.once('open', function () {
-    test.equal(1, 1);
-    test.done();
+    expect(1).toEqual(1);
+    done();
   });
-};
+});
 
-exports.testOpenConnectionAndFind = function (test) {
+it("testOpenConnectionAndFind", done => {
   var mymock = {};
-  test.expect(1);
+  expect.assertions(1);
   var mongooseM = MongoMock.instrumentMongoose(mymock, 'test/data/', 'REPLAY');
   mongooseM.connect('dummyconn');
   mongooseM.connection.once('open', function () {
     var model = mongooseM.model('abc', { a: 'schema' });
     model.find({}).lean().exec().then((res) => {
 
-      test.deepEqual(res, [{ a: 1 }, { a: 2 }]);
+      expect(res).toEqual([{ a: 1 }, { a: 2 }]);
       mongooseM.disconnect();
-      test.done();
+      done();
     });
   });
-};
+});
 
 
 
-exports.testOpenConnectionAndFindNotPresent = function (test) {
+it("testOpenConnectionAndFindNotPresent", done => {
   var mymock = {};
-  test.expect(1);
+  expect.assertions(1);
   var mongooseM = MongoMock.instrumentMongoose(mymock, 'test/data/', 'REPLAY');
   mongooseM.connect('dummyconn');
   mongooseM.connection.once('open', function () {
     var model = mongooseM.model('abc', { a: 'schema' });
     try {
       model.find({ 'a': 1 }).lean().exec().then((res) => {
-        test.equal(1, 0);
+        expect(1).toEqual(0);
         mongooseM.disconnect();
-        test.done();
+        done();
       });
     }
     catch (e) {
-      test.equal(1, 1);
+      expect(1).toEqual(1);
       mongooseM.disconnect();
-      test.done();
+      done();
     }
   });
-};
+});
