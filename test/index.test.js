@@ -26,14 +26,14 @@ try {
 }
 */
 
-it("testDigestPlatformNeutral", done => {
+it('testDigestPlatformNeutral', done => {
 
   var res = MongoMock.digestArgs('abc','def', { a : /^abc/i, b : [1,2,'3'] } );
   expect(res).toEqual('896d5e71371a58f430b6bbe7fb9079b7');
   done();
 });
 
-it("testDeser", done => {
+it('testDeser', done => {
   var ser = MongoMock.JSONStringify({ a: /abc/g, c: 1 });
   var r = MongoMock.JSONParse(ser);
   expect(r.a instanceof RegExp).toEqual(true);
@@ -41,14 +41,14 @@ it("testDeser", done => {
   done();
 });
 
-it("testPlainMongo", done => {
+it('testPlainMongo', done => {
   var mymock = {};
   var res = MongoMock.instrumentMongoose(mymock, 'path1', undefined);
   expect(res).toEqual(mymock);
   done();
 });
 
-it("testOpenConnection", done => {
+it('testOpenConnection', done => {
   var mymock = {};
   expect.assertions(1);
   var res = MongoMock.instrumentMongoose(mymock, 'path1/', 'REPLAY');
@@ -59,7 +59,7 @@ it("testOpenConnection", done => {
   });
 });
 
-it("testOpenConnectionAndFind", done => {
+it('testOpenConnectionAndFind', done => {
   var mymock = {};
   expect.assertions(1);
   var mongooseM = MongoMock.instrumentMongoose(mymock, 'test/data/', 'REPLAY');
@@ -77,7 +77,7 @@ it("testOpenConnectionAndFind", done => {
 
 
 
-it("testOpenConnectionAndFindNotPresent", done => {
+it('testOpenConnectionAndFindNotPresent', done => {
   var mymock = {};
   expect.assertions(1);
   var mongooseM = MongoMock.instrumentMongoose(mymock, 'test/data/', 'REPLAY');

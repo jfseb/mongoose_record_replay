@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.instrumentMongoose = void 0;
 const mongoose_record_replay = require("./mgrecrep");
 exports.instrumentMongoose = mongoose_record_replay.instrumentMongoose;
 //{ mongoose_record_replay};
 
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFBQSxxREFBcUQ7QUFFMUMsUUFBQSxrQkFBa0IsR0FBRyxzQkFBc0IsQ0FBQyxrQkFBa0IsQ0FBQztBQUUxRSw0QkFBNEIiLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgKiBhcyBtb25nb29zZV9yZWNvcmRfcmVwbGF5IGZyb20gXCIuL21ncmVjcmVwXCI7XHJcblxyXG5leHBvcnQgdmFyIGluc3RydW1lbnRNb25nb29zZSA9IG1vbmdvb3NlX3JlY29yZF9yZXBsYXkuaW5zdHJ1bWVudE1vbmdvb3NlO1xyXG5cclxuLy97IG1vbmdvb3NlX3JlY29yZF9yZXBsYXl9OyJdfQ==

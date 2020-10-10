@@ -2,8 +2,14 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "es6": true
+        "node" : true,
+        "es6": true,
+        "jest/globals" : true
     },
+    "parserOptions": {
+        "ecmaVersion" : 8
+    },
+    "plugins" : ["jest"],
     "extends": "eslint:recommended",
     "rules": {
         "no-unused-vars": [
@@ -17,15 +23,12 @@
             "off"
         ],
         "indent": [
-            "warn",
+            "error",
             2
         ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
+        "linebreak-style": 0,
         "quotes": [
-            "warn",
+            "error",
             "single"
         ],
         "semi": [

@@ -1,3 +1,8 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+    "eslint.autoFixOnSave": true,
+    "debug.node.autoAttach": "on",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
 }
