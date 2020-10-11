@@ -1,9 +1,12 @@
 {
   "name": "mongoose_record_replay",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "description": "readonly mongoose drop in for testing (replaying w.o. mongo db)  and recording (running against mongodb)",
   "main": "js/index.js",
   "typings": "js/index.d.ts",
+  "jest": {
+    "testEnvironment": "node"
+  },
   "scripts": {
     "build": "gulp && tsc",
     "test": "gulp test",
@@ -23,15 +26,12 @@
   "bugs": {
     "url": "https://github.com/jfseb/mgongoose_record_replay/issues"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
   "homepage": "https://github.com/jfseb/mongoose_record_replay#readme",
   "devDependencies": {
     "@types/debug": "^4.1.5",
     "@types/lodash": "^4.14.161",
-    "@types/node": "^8.10.56",
-    "del": "^5.1.0",
+    "@types/node": "^8.10.64",
+    "del": "^6.0.0",
     "eslint-plugin-jest": "^24.1.0",
     "eslint": "^6.8.0",
     "gulp": "^4.0.2",
@@ -47,6 +47,6 @@
   },
   "dependencies": {
     "debugf": "^0.1.2",
-    "mongoose": "^5.7.7"
+    "mongoose": "^5.10.8"
   }
 }
