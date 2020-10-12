@@ -5,9 +5,7 @@
  *
  * @file
  */
-/// <reference types="node" />
 import * as mongoose from 'mongoose';
-import * as events from 'events';
 /**
  * The recording path, set via argument
  * or
@@ -30,15 +28,3 @@ export declare function instrumentModelReplay(modelDoc: mongoose.Model<any>, rec
  * @param mode {string}  undefined (environment value) or "REPLAY" or "RECORD"
  */
 export declare function instrumentMongoose(mongoose: mongoose.Mongoose, path: string, mode?: string): mongoose.Mongoose;
-export declare var mongooseMock: {
-    models: {};
-    recordingPath: string;
-    theMode: string;
-    modelNames: () => string[];
-    Schema: any;
-    model: (a: any, b: any) => any;
-    disconnect: () => void;
-    connect: (connStr: string) => void;
-    set: (a: any, b: any) => void;
-    connection: events.EventEmitter;
-};

@@ -142,7 +142,7 @@ export function retrieveOp(op: string, name: string, query: any, recordingPath :
 }
 
 export function instrumentModelRecord(modelDoc: mongoose.Model<any>, recordingPath: string, theMode: string) {
-    console.log('***mongoose_record_replay is instrumenting model ' + modelDoc.modelName + ' for recording to ' + recordingPath );
+    debuglog('mongoose_record_replay is instrumenting model ' + modelDoc.modelName + ' for recording to ' + recordingPath );
     var oFind = modelDoc.find;
     modelDoc.find = function (): any {
         debuglog('someone is calling find with ' + modelDoc.modelName + JSON.stringify(arguments, undefined, 2));
@@ -253,7 +253,7 @@ export function instrumentModelReplay(modelDoc: mongoose.Model<any>, recordingPa
  * @param mode {string}  undefined (environment value) or "REPLAY" or "RECORD"
  */
 export function instrumentMongoose(mongoose: mongoose.Mongoose, path: string, mode?: string): mongoose.Mongoose {
-    console.log(' ********* instrument mongoose with  ' + path + "  " + mode);
+    debuglog(' instrument mongoose with  ' + path + "  " + mode);
     var theMode = mode || process.env.MONGO_RECORD_REPLAY;
     if (theMode && ["REPLAY", "RECORD"].indexOf(mode) < 0) {
         console.log('passed mode value or env MONGO_RECORD_REPLAY may only be "RECORD" or "REPLAY" , MONGO_RECORD MONGO_REPLAY');
@@ -274,7 +274,6 @@ export function instrumentMongoose(mongoose: mongoose.Mongoose, path: string, mo
     } else if (theMode === "REPLAY") {
         recordingPath = path || process.env.MONGO_RECORD_REPLAY_PATH || "mongoose_record_replay";
         console.log( '!* mode REPLAY from path ' + recordingPath  + ' in ' + __dirname + " "  + mode  + " " + path);
-    //    var r = mongooseMock;
         var r = makeMongooseMock(recordingPath,theMode);
         return r; 
     }
@@ -329,7 +328,7 @@ function makeMongooseMock(recordingPath: string, theMode: string) {
     return mocksPerPath[recordingPath];
 }
 
-export var mongooseMock = {
+/*export*/ /*var mongooseMock2 = {
     models: {},
     recordingPath : "",
     theMode : "",
@@ -370,3 +369,4 @@ export var mongooseMock = {
     set : function(a,b) {},
     connection: dbEmitter
 };
+*/
