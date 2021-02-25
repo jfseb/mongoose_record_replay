@@ -13,7 +13,7 @@ var mongoose = require('mongoose_record_replay').instrumentMongoose(require('mon
 ```
 
 ##extended usage:
-Behaviour can be set by environment variables ( see below) or explicitly via paramter:
+Behaviour can be set by environment variables ( see below) or explicitly via parameter:
 
 ```javascript
 var mode = 'REPLAY';
@@ -51,7 +51,7 @@ The operational mode is controlled by the environment variable
  return there recorded result ( if found ) or an
  ENOENT message on the file
 
- (set debug=mongoose_rec* ) to get more infomration
+ (set debug=mongoose_rec* ) to get more information
 
 
 ## Recording  (``set MONGO_RECORD_REPLAY=RECORD``)
@@ -60,7 +60,7 @@ Queries are executed against mongoose,
 1.  query input
     * ``<modelname>``,
     * `<operation> (e.g. `find, aggregate, distinct`),
-    * `<query/pipeline>` argumetns are recorded )
+    * `<query/pipeline>` arguments are recorded )
 and
 2. Result is recorded and stored.
 
@@ -70,7 +70,7 @@ and
 
 
 
-On recording, files are created in (default locattion "mgrecrep/", can be controlled )
+On recording, files are created in (default location "mgrecrep/", can be controlled )
 
     1. mgrecrep/queries.json
         List of queries recorded
@@ -91,8 +91,8 @@ The variable value shall end with a terminating '/' !
     2. Environment variable ``MONGO_RECORD_REPLAY_FOLDER``, e.g.
        ```
        process.env.MONGO_RECORD_REPLAY_FOLDER= mgrecrep/
-       set MONGO_RECORD_REPLOAY_FOLDER=mypath/myfolder/
-       export MONGO_RECORD_REPLAY_FOLRDER  mypath/myfolder/
+       set MONGO_RECORD_REPLAY_FOLDER=mypath/myfolder/
+       export MONGO_RECORD_REPLAY_FOLDER  mypath/myfolder/
        ```
 
 
